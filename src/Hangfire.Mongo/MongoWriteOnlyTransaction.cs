@@ -50,6 +50,19 @@ namespace Hangfire.Mongo
 
         public virtual void RemoveFromQueue(ObjectId id, DateTime fetchedAt, string queue)
         {
+            var findJobById = new BsonDocument 
+            { 
+                ["_id"] = id, 
+                ["_t"] = nameof(JobDto) 
+                };
+            var job = DbContext.JobGraph.Find(findJobById).FirstOrDefault();
+            var jobDto = new JobDto(job);
+
+            if (jobDto.StateName.ToLower() == "enqueued")
+            {
+                Requeue(id, queue);
+                return;
+            }
             var filter = new BsonDocument
             {
                 ["_id"] = id,
