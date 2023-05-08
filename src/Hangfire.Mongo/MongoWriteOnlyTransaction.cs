@@ -54,7 +54,7 @@ namespace Hangfire.Mongo
             { 
                 ["_id"] = id, 
                 ["_t"] = nameof(JobDto) 
-                };
+            };
             var job = DbContext.JobGraph.Find(findJobById).FirstOrDefault();
             var jobDto = new JobDto(job);
 
